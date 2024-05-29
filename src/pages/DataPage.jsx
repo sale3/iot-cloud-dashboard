@@ -333,14 +333,25 @@ export const DataPage = () => {
           {errorMsg}
         </Alert>
       </Snackbar>
-      <Button
-        variant="outlined"
-        color="error"
-        className="logout-btn"
-        onClick={logout}
-      >
-        logout
-      </Button>
+      
+      <div className="buttons">
+        <Button
+            variant="outlined"
+            color="primary"
+            className=""
+            onClick={() => navigate('/iot-platform/config')}
+        >
+          Configuration
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          className=""
+          onClick={logout}
+        >
+          logout
+        </Button>
+      </div>
       <div className="dashboard-container">
         <div className="cards-container">
           <div className="title-div">
