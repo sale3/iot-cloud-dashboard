@@ -14,7 +14,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export const ConfigPage = () => {
     const navigate = useNavigate();
-    
+
     const [tempConfig, setTempConfig] = React.useState({});
     const [loadConfig, setLoadConfig] = React.useState({});
     const [fuelConfig, setFuelConfig] = React.useState({});
@@ -25,7 +25,7 @@ export const ConfigPage = () => {
     const getGatewayApiUrl = (username) => {
         const regex = new RegExp(`${username}_GATEWAY_API_URL`);
         Object.keys(conf).forEach(key => {
-            if(key.match(regex)){
+            if (key.match(regex)) {
                 return conf[key];
             }
         });
@@ -35,65 +35,65 @@ export const ConfigPage = () => {
 
     useEffect(() => {
         if (
-          !sessionStorage.getItem("jwt") ||
-          sessionStorage.getItem("jwt") === "" ||
-          !sessionStorage.getItem("device") ||
-          sessionStorage.getItem("device") === ""
+            !sessionStorage.getItem("jwt") ||
+            sessionStorage.getItem("jwt") === "" ||
+            !sessionStorage.getItem("device") ||
+            sessionStorage.getItem("device") === ""
         )
-        navigate("/iot-platform/login");
+            navigate("/iot-platform/login");
 
         axios
-        .get(conf.server_url + `/auth/jwt-check`, {
-            headers: {
-            Authorization: "Bearer " + sessionStorage.getItem("jwt"),
-            },
-        })
-        .then((res) => {
-            console.log("JWT OK");
-        })
-        .catch((exc) => {
-            console.log("ERROR::JWT_NOT_VALID");
-            navigate("/iot-platform/login");
-        });
+            .get(conf.server_url + `/auth/jwt-check`, {
+                headers: {
+                    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+                },
+            })
+            .then((res) => {
+                console.log("JWT OK");
+            })
+            .catch((exc) => {
+                console.log("ERROR::JWT_NOT_VALID");
+                navigate("/iot-platform/login");
+            });
 
         gatewayApiUrl = getGatewayApiUrl(sessionStorage.getItem("device"));
 
         // Request current configuration
         axios
-        .get(gatewayApiUrl, {
-            headers: {},
-        })
-        .then((res) => {
-            console.log("Initial data:");
-            console.log(res.data);
+            .get(gatewayApiUrl, {
+                headers: {},
+            })
+            .then((res) => {
+                console.log("Initial data:");
+                console.log(res.data);
 
-            setTempConfig(res.data.temp_settings);
-            setLoadConfig(res.data.load_settings);
-            setFuelConfig(res.data.fuel_settings);
-        })
-        .catch((exc) => {
-            console.log("ERROR::GATEWAY_API::INITIAL_GET");
-            console.log(exc);
-            setSnackbar(true);
-        });
+                setTempConfig(res.data.temp_settings);
+                setLoadConfig(res.data.load_settings);
+                setFuelConfig(res.data.fuel_settings);
+            })
+            .catch((exc) => {
+                console.log("ERROR::GATEWAY_API::INITIAL_GET");
+                console.log(exc);
+                setSnackbar(true);
+            });
     }, []);
 
     const allPropertiesSet = () => {
-        return Object.hasOwn(tempConfig, 'interval')    &&
-               Object.hasOwn(tempConfig, 'mode')        &&
-               Object.hasOwn(loadConfig, 'interval')    &&
-               Object.hasOwn(loadConfig, 'mode')        &&
-               Object.hasOwn(fuelConfig, 'level_limit') &&
-               Object.hasOwn(fuelConfig, 'mode');
+        return Object.hasOwn(tempConfig, 'interval') &&
+            Object.hasOwn(tempConfig, 'mode') &&
+            Object.hasOwn(loadConfig, 'interval') &&
+            Object.hasOwn(loadConfig, 'mode') &&
+            Object.hasOwn(fuelConfig, 'level_limit') &&
+            Object.hasOwn(fuelConfig, 'mode');
     };
-    
+
     const submitConfig = () => {
         console.log("Configuration submitted.");
         console.log(tempConfig);
         console.log(loadConfig);
         console.log(fuelConfig);
 
-        if(!allPropertiesSet()){
+        if (!allPropertiesSet()) {
             console.log("ERROR: Not all properties are set.");
             setSnackbar(true);
             return;
@@ -102,15 +102,15 @@ export const ConfigPage = () => {
         axios.post(
             gatewayApiUrl,
             {
-                "temp_settings" : {
+                "temp_settings": {
                     "interval": tempConfig.interval,
                     "mode": tempConfig.mode
                 },
-                "load_settings" : {
+                "load_settings": {
                     "interval": loadConfig.interval,
                     "mode": loadConfig.mode
                 },
-                "fuel_settings" : {
+                "fuel_settings": {
                     "level_limit": fuelConfig.level_limit,
                     "mode": fuelConfig.mode
                 }
@@ -127,79 +127,87 @@ export const ConfigPage = () => {
 
     const handleCloseSnackbar = (event, reason) => {
         if (reason === "clickaway") {
-          return;
+            return;
         }
-    
+
         setSnackbar(false);
     };
 
     return (
-      <div>
-        <Snackbar
-            open={snackbar}
-            autoHideDuration={4000}
-            onClose={handleCloseSnackbar}
-        >
-            <Alert
+        <div>
+            <Snackbar
+                open={snackbar}
+                autoHideDuration={4000}
                 onClose={handleCloseSnackbar}
-                severity="error"
-                sx={{ width: "100%" }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity="error"
+                    sx={{ width: "100%" }}
                 >
-                Gateway configuration endpoint can't be reached.
-            </Alert>
-        </Snackbar>
-        <div className="buttons">
-            <Button
-                variant="outlined"
-                color="primary"
-                className=""
-                onClick={() => navigate('/iot-platform/dashboard')}
-            >
-                Dashboard
-            </Button>
-            <Button
-                variant="outlined"
-                color="primary"
-                className=""
-                onClick={submitConfig}
-            >
-                Submit
-            </Button>
+                    Gateway configuration endpoint can't be reached.
+                </Alert>
+            </Snackbar>
+            <div className="buttons">
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    className=""
+                    onClick={() => navigate('/iot-platform/dashboard')}
+                >
+                    Dashboard
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    className=""
+                    onClick={() => navigate('/iot-platform/protocol')}
+                >
+                    Protocols
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    className=""
+                    onClick={submitConfig}
+                >
+                    Submit
+                </Button>
+            </div>
+
+            <div class="config-options">
+                <ConfigCard
+                    title="Temperature"
+                    value={tempConfig.interval || ''}
+                    min={conf.TEMP_MIN}
+                    max={conf.TEMP_MAX}
+                    mode={tempConfig.mode || ''}
+                    config={tempConfig}
+                    setConfig={setTempConfig}
+                    marks
+                ></ConfigCard>
+                <ConfigCard
+                    title="Load"
+                    value={loadConfig.interval || ''}
+                    min={conf.LOAD_MIN}
+                    max={conf.LOAD_MAX}
+                    mode={loadConfig.mode || ''}
+                    config={loadConfig}
+                    setConfig={setLoadConfig}
+                    marks
+                ></ConfigCard>
+                <ConfigCard
+                    title="Fuel"
+                    value={fuelConfig.level_limit || ''}
+                    min={conf.FUEL_MIN}
+                    max={conf.FUEL_MAX}
+                    mode={fuelConfig.mode || ''}
+                    config={fuelConfig}
+                    setConfig={setFuelConfig}
+                    marks
+                ></ConfigCard>
+            </div>
         </div>
-        
-        <div class="config-options">
-            <ConfigCard
-                title="Temperature"
-                value={tempConfig.interval || ''}
-                min={conf.TEMP_MIN}
-                max={conf.TEMP_MAX}
-                mode={tempConfig.mode || ''}
-                config={tempConfig}
-                setConfig={setTempConfig}
-                marks
-            ></ConfigCard>
-            <ConfigCard
-                title="Load"
-                value={loadConfig.interval || ''}
-                min={conf.LOAD_MIN}
-                max={conf.LOAD_MAX}
-                mode={loadConfig.mode || ''}
-                config={loadConfig}
-                setConfig={setLoadConfig}
-                marks
-            ></ConfigCard>
-            <ConfigCard
-                title="Fuel"
-                value={fuelConfig.level_limit || ''}
-                min={conf.FUEL_MIN}
-                max={conf.FUEL_MAX}
-                mode={fuelConfig.mode || ''}
-                config={fuelConfig}
-                setConfig={setFuelConfig}
-                marks
-            ></ConfigCard>
-        </div>
-      </div>
     );
 };
 

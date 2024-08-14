@@ -28,6 +28,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { over } from "stompjs";
 import SocketJS from "sockjs-client";
+import LogoutButton from "../components/LogoutButton";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -232,9 +233,7 @@ export const DataPage = () => {
         setSnackbar(true);
       });
   }, []);
-  const logout = () => {
-    navigate("/iot-dashboard/login");
-  };
+
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -344,13 +343,14 @@ export const DataPage = () => {
           Configuration
         </Button>
         <Button
-          variant="outlined"
-          color="error"
-          className=""
-          onClick={logout}
+            variant="outlined"
+            color="primary"
+            className=""
+            onClick={() => navigate('/iot-platform/protocol')}
         >
-          logout
+          Protocols
         </Button>
+        <LogoutButton />
       </div>
       <div className="dashboard-container">
         <div className="cards-container">
