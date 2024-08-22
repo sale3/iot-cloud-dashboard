@@ -2,6 +2,7 @@
     margin: 15px;
     background-color: white;
     flex-grow: 1;
+    flex-wrap: wrap;
     width: 300px;
     border-radius: 15px;
     height: 180px;
@@ -74,4 +75,35 @@
     position: absolute;
     bottom: -15px;
     right: -25px;
+}
+
+.row-div {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.col-div {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex-wrap: wrap;
+}
+
+.text-div {
+    width: 75%;
+    margin-right: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-div {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
