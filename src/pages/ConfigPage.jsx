@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ConfigCard from "../components/ConfigCard";
 import Button from "@mui/material/Button";
@@ -7,6 +7,22 @@ import "../style/config-page.css";
 import conf from "../conf.json";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import { useTheme } from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -14,11 +30,26 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export const ConfigPage = () => {
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const [tempConfig, setTempConfig] = React.useState({});
     const [loadConfig, setLoadConfig] = React.useState({});
     const [fuelConfig, setFuelConfig] = React.useState({});
     const [snackbar, setSnackbar] = React.useState(false);
+
+    const [protocols, setProtocols] = useState([]);
+    const [initialProtocols, setInitialProtocols] = useState([]);
+    const [dataChanged, setDataChanged] = useState(false);
+
+    useEffect(() => {
+        if (JSON.stringify(protocols) !== JSON.stringify(initialProtocols)) {
+            setDataChanged(true);
+        } else {
+            setDataChanged(false);
+        }
+    }, [protocols, initialProtocols]);
+
+
 
     let gatewayApiUrl = conf.IOTDEVICE1_GATEWAY_API_URL;
 
@@ -75,6 +106,19 @@ export const ConfigPage = () => {
                 console.log("ERROR::GATEWAY_API::INITIAL_GET");
                 console.log(exc);
                 setSnackbar(true);
+            });
+
+        axios
+            .get(process.env.REACT_APP_API_URL + `/protocols`, {
+                headers: {
+                    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+                },
+            })
+            .then((res) => {
+                setInitialProtocols(res.data);
+                setProtocols(res.data);
+            }).catch(exc => {
+                console.log("Error fetching protocols")
             });
     }, []);
 
