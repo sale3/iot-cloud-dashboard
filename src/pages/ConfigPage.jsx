@@ -289,37 +289,119 @@ export const ConfigPage = () => {
                 </Button>
             </div>
 
-            <div class="config-options">
-                <ConfigCard
-                    title="Temperature"
-                    value={tempConfig.interval || ''}
-                    min={conf.TEMP_MIN}
-                    max={conf.TEMP_MAX}
-                    mode={tempConfig.mode || ''}
-                    config={tempConfig}
-                    setConfig={setTempConfig}
-                    marks
-                ></ConfigCard>
-                <ConfigCard
-                    title="Load"
-                    value={loadConfig.interval || ''}
-                    min={conf.LOAD_MIN}
-                    max={conf.LOAD_MAX}
-                    mode={loadConfig.mode || ''}
-                    config={loadConfig}
-                    setConfig={setLoadConfig}
-                    marks
-                ></ConfigCard>
-                <ConfigCard
-                    title="Fuel"
-                    value={fuelConfig.level_limit || ''}
-                    min={conf.FUEL_MIN}
-                    max={conf.FUEL_MAX}
-                    mode={fuelConfig.mode || ''}
-                    config={fuelConfig}
-                    setConfig={setFuelConfig}
-                    marks
-                ></ConfigCard>
+            <div className="col-div">
+                <div class="config-options">
+                    <ConfigCard
+                        title="Temperature"
+                        value={tempConfig.interval || ''}
+                        min={conf.TEMP_MIN}
+                        max={conf.TEMP_MAX}
+                        mode={tempConfig.mode || ''}
+                        config={tempConfig}
+                        setConfig={setTempConfig}
+                        marks
+                    ></ConfigCard>
+                    <ConfigCard
+                        title="Load"
+                        value={loadConfig.interval || ''}
+                        min={conf.LOAD_MIN}
+                        max={conf.LOAD_MAX}
+                        mode={loadConfig.mode || ''}
+                        config={loadConfig}
+                        setConfig={setLoadConfig}
+                        marks
+                    ></ConfigCard>
+                    <ConfigCard
+                        title="Fuel"
+                        value={fuelConfig.level_limit || ''}
+                        min={conf.FUEL_MIN}
+                        max={conf.FUEL_MAX}
+                        mode={fuelConfig.mode || ''}
+                        config={fuelConfig}
+                        setConfig={setFuelConfig}
+                        marks
+                    ></ConfigCard>
+                </div>
+
+                <Card sx={{ boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)', borderRadius: '15px' }} className="card-custom">
+                    <CardContent>
+                        <Typography className="title" variant="h5" component="div">
+                            Device protocols
+                        </Typography>
+                        <Button onClick={handleClickOpenDialog}>Assign device protocols</Button>
+                        <div className="col-div">
+
+                            {protocols.map((protocol, index) => (protocol.assigned &&
+                                <div className="row-div">
+                                    <div className="text-div">{protocol.name}</div>
+                                    <div className="button-div"><Button
+                                        onClick={() => unassignProtocol(index)}
+                                        sx={{
+                                            fontSize: '12px',
+                                        }}
+                                        variant="outlined"
+                                        color="error"
+                                    >
+                                        REMOVE
+                                    </Button></div>
+                                </div>
+                            ))}
+                        </div>
+                    </CardContent>
+                    <Button variant="outlined"
+                        color="primary" sx={{
+                            padding: '12px 24px',
+                            fontSize: '1.25rem',
+                            minWidth: '140px',
+                            marginBottom: '15px'
+                        }}
+                        onClick={() => submitDeviceProtocols()}
+                        disabled={!dataChanged}>SUBMIT</Button>
+                </Card>
+
+                <Dialog
+                    open={openDialog}
+                    onClose={handleCloseDialog}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Unassigned device protocols"}
+                    </DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                {protocols.map((protocol, index) => (
+                                    !protocol.assigned && <ListItem
+                                        key={index}
+                                        disableGutters
+                                        secondaryAction={
+                                            <IconButton onClick={() => assignProtocol(index)} sx={{
+                                                color: theme.palette.primary.light,
+                                                '& .MuiSvgIcon-root': {
+                                                    fontSize: 20,
+                                                },
+                                            }}>
+                                                <AddIcon />
+                                            </IconButton>
+                                        }
+                                    >
+                                        <ListItemText primary={`${protocol.name}`} />
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <Button onClick={handleCloseDialog} autoFocus>
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
         </div>
     );
