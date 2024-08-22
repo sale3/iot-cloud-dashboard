@@ -49,7 +49,25 @@ export const ConfigPage = () => {
         }
     }, [protocols, initialProtocols]);
 
+    const [openDialog, setOpenDialog] = React.useState(false);
+    const handleClickOpenDialog = () => {
+        setOpenDialog(true);
+    };
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
+    const [openSuccessSnackbar, setOpenSuccessSnackbar] = React.useState(false);
+    const onOpenSuccessSnackbar = () => {
+        setOpenSuccessSnackbar(true);
+    };
+    const handleCloseSuccessSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSuccessSnackbar(false);
+    };
 
     let gatewayApiUrl = conf.IOTDEVICE1_GATEWAY_API_URL;
 
@@ -63,6 +81,45 @@ export const ConfigPage = () => {
 
         return conf.IOTDEVICE1_GATEWAY_API_URL;
     };
+
+    const unassignProtocol = (index) => {
+        const updatedProtocols = [...protocols];
+        updatedProtocols[index] = {
+            ...updatedProtocols[index],
+            assigned: false
+        };
+        setProtocols(updatedProtocols);
+    };
+
+    const assignProtocol = (index) => {
+        const updatedProtocols = [...protocols];
+        updatedProtocols[index] = {
+            ...updatedProtocols[index],
+            assigned: true
+        };
+        setProtocols(updatedProtocols);
+    };
+
+    const submitDeviceProtocols = () => {
+        axios
+            .post(process.env.REACT_APP_API_URL + `/protocols/protocol_assignment`, protocols, {
+                headers: {
+                    Authorization: "Bearer " + sessionStorage.getItem("jwt"),
+                },
+            })
+            .then((res) => {
+                if (res.data.result) {
+                    setInitialProtocols(protocols);
+                    onOpenSuccessSnackbar();
+                } else {
+                    console.log("Error in protocols assignment!")
+                }
+
+            }).catch(exc => {
+                console.log("Error in protocols assignment: " + exc)
+            });
+
+    }
 
     useEffect(() => {
         if (
@@ -190,6 +247,19 @@ export const ConfigPage = () => {
                     sx={{ width: "100%" }}
                 >
                     Gateway configuration endpoint can't be reached.
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={openSuccessSnackbar}
+                autoHideDuration={1500}
+                onClose={handleCloseSuccessSnackbar}
+            >
+                <Alert
+                    onClose={handleCloseSuccessSnackbar}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    Successful operation!
                 </Alert>
             </Snackbar>
             <div className="buttons">
