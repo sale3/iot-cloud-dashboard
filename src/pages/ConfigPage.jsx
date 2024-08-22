@@ -32,10 +32,10 @@ export const ConfigPage = () => {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    const [tempConfig, setTempConfig] = React.useState({});
-    const [loadConfig, setLoadConfig] = React.useState({});
-    const [fuelConfig, setFuelConfig] = React.useState({});
-    const [snackbar, setSnackbar] = React.useState(false);
+    const [tempConfig, setTempConfig] = useState({});
+    const [loadConfig, setLoadConfig] = useState({});
+    const [fuelConfig, setFuelConfig] = useState({});
+    const [snackbar, setSnackbar] = useState(false);
 
     const [protocols, setProtocols] = useState([]);
     const [initialProtocols, setInitialProtocols] = useState([]);
@@ -49,7 +49,7 @@ export const ConfigPage = () => {
         }
     }, [protocols, initialProtocols]);
 
-    const [openDialog, setOpenDialog] = React.useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const handleClickOpenDialog = () => {
         setOpenDialog(true);
     };
@@ -57,7 +57,7 @@ export const ConfigPage = () => {
         setOpenDialog(false);
     };
 
-    const [openSuccessSnackbar, setOpenSuccessSnackbar] = React.useState(false);
+    const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
     const onOpenSuccessSnackbar = () => {
         setOpenSuccessSnackbar(true);
     };
