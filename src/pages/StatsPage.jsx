@@ -51,7 +51,128 @@ export const StatsPage = () => {
     }, []);
 
     
-    
+    const formatDate = (dateString) => {
+        // Parse the input date string
+        const [datePart, timePart] = dateString.split(' ');
+        const [year, month, day] = datePart.split('.');
+
+        // Create a Date object
+        const dateObj = new Date(`${year}-${month}-${day}T${timePart}`);
+
+        // Format the date to "DD.MM.YYYY HH:mm:ss"
+        const dayFormatted = String(dateObj.getDate()).padStart(2, '0');
+        const monthFormatted = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const yearFormatted = dateObj.getFullYear();
+        const timeFormatted = dateObj.toTimeString().split(' ')[0];
+
+        return `${dayFormatted}.${monthFormatted}.${yearFormatted} ${timeFormatted}`;
+    };
+
+    const transformData = (data) => {
+        const valueWithUnit = `${data.protocolStats.value} ${data.protocolStats.unit}`;
+        const formattedDate = formatDate(data.protocolStats.time);
+        return {
+            ...data.protocolStats,
+            protocolName: data.protocolName,
+            protocolDataName: data.protocolDataName,
+            valueWithUnit: valueWithUnit,
+            formattedDate: formattedDate
+        };
+    };
+
+    const onConnectionEstablished = (stompClient) => {
+        setTimeout(() => {
+            stompClient.subscribe(
+                "/devices/" + sessionStorage.getItem("device") + "/protocol",
+                (payload) => {
+                    console.log("Received smth!!!")
+                    const bodyUnparsed = JSON.parse(payload.body);
+                    const body = transformData(bodyUnparsed);
+                    setStats((prevStats) => {
+                        const isDuplicate = prevStats.some(stat =>
+                            stat.time === body.time &&
+                            stat.value === body.value &&
+                            stat.canId === body.canId &&
+                            stat.numBits === body.numBits &&
+                            stat.startBit === body.startBit
+                        );
+
+                        return isDuplicate ? prevStats : [...prevStats, body];
+                    });
+                }
+            );
+        }, 100);
+    };
+
+    const connect = () => {
+        const socket = new SocketJS(process.env.REACT_APP_API_URL + "/ws");
+        const stompClient = over(socket);
+        stompClient.connect(
+            {},
+            () => onConnectionEstablished(stompClient),
+            onError
+        );
+    };
+
+    const onError = () => {
+        console.log("Error connecting to Socket JS!");
+    };
+
+    const handleProtocolCheckboxChange = (protocolIndex) => (event) => {
+        const isChecked = event.target.checked;
+
+        setSelectedProtocols((prevSelectedProtocols) => {
+            const newSelectedProtocols = isChecked
+                ? [...prevSelectedProtocols, protocolIndex]
+                : prevSelectedProtocols.filter(index => index !== protocolIndex);
+
+            const associatedData = protocols[protocolIndex].protocolData.map((_, dataIndex) => dataIndex);
+            setSelectedProtocolData((prevSelectedProtocolData) => {
+                const newSelectedProtocolData = isChecked
+                    ? { ...prevSelectedProtocolData, [protocolIndex]: associatedData }
+                    : { ...prevSelectedProtocolData, [protocolIndex]: prevSelectedProtocolData[protocolIndex]?.filter(index => !associatedData.includes(index)) };
+
+                return newSelectedProtocolData;
+            });
+
+            return newSelectedProtocols;
+        });
+    };
+
+    const handleDataCheckboxChange = (protocolIndex, dataIndex) => (event) => {
+        const isChecked = event.target.checked;
+
+        setSelectedProtocolData((prevSelectedProtocolData) => {
+            const newSelectedProtocolData = {
+                ...prevSelectedProtocolData,
+                [protocolIndex]: isChecked
+                    ? [...(prevSelectedProtocolData[protocolIndex] || []), dataIndex]
+                    : (prevSelectedProtocolData[protocolIndex] || []).filter(index => index !== dataIndex)
+            };
+
+            setSelectedProtocols((prevSelectedProtocols) => {
+                const allDataChecked = protocols[protocolIndex].protocolData.every((_, i) => newSelectedProtocolData[protocolIndex]?.includes(i));
+                return allDataChecked
+                    ? [...prevSelectedProtocols, protocolIndex]
+                    : prevSelectedProtocols.filter(index => index !== protocolIndex);
+            });
+
+            return newSelectedProtocolData;
+        });
+    };
+
+    const protocolColumns = [
+        { field: 'protocolDataName', headerName: 'Name', width: 420 },
+        { field: 'valueWithUnit', headerName: 'Value', width: 420 },
+        { field: 'formattedDate', headerName: 'Time', width: 420 },
+    ];
+
+    const addUniqueIdsToRows = (rows) => {
+        return rows.map((row, index) => ({
+            ...row,
+            id: row.id || index,
+        }));
+    };
 
 
     const displaySelectedData = () => {
