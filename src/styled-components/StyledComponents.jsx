@@ -49,6 +49,32 @@ export const ColDiv = styled.div`
   margin-bottom: 10px;
 `;
 
+export const RowDiv = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-grow: 1;
+`;
+
+export const BiggerDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    width: 67%;
+    background-color: #e3f2fd;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+`;
+
+export const SmallerDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 33%;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+`;
+
 export const StyledLabel = styled.label`
     color: rgba(0, 0, 0, 0.6);
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
