@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -98,7 +98,7 @@ export default function ProtocolDataPage() {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (
             !sessionStorage.getItem("jwt") ||
             sessionStorage.getItem("jwt") === "" ||
@@ -135,13 +135,13 @@ export default function ProtocolDataPage() {
 
     }, []);
 
-    const [protocol, setProtocol] = React.useState({});
-    const [initialProtocolName, setInitialProtocolName] = React.useState('');
+    const [protocol, setProtocol] = useState({});
+    const [initialProtocolName, setInitialProtocolName] = useState('');
 
-    const [canData, setCanData] = React.useState([]);
-    const [initialData, setInitialData] = React.useState([]);
+    const [canData, setCanData] = useState([]);
+    const [initialData, setInitialData] = useState([]);
 
-    const [protocolDialogOpen, setProtocolDialogOpen] = React.useState(false);
+    const [protocolDialogOpen, setProtocolDialogOpen] = useState(false);
     const handleProtocolDialogClickOpen = () => {
         setProtocolDialogOpen(true);
     };
@@ -149,20 +149,20 @@ export default function ProtocolDataPage() {
         setProtocolDialogOpen(false);
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (JSON.stringify(canData) === JSON.stringify(initialData) && protocol.name === initialProtocolName) {
             setDataChanged(false);
         } else {
             setDataChanged(true);
         }
-    }, [canData, protocol]);
+    }, [canData, protocol, initialData]);
 
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    const [open, setOpen] = React.useState(false);
-    const [currentRow, setCurrentRow] = React.useState({});
-    const [dataChanged, setDataChanged] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [currentRow, setCurrentRow] = useState({});
+    const [dataChanged, setDataChanged] = useState(false);
 
     const onCreateCANData = (newData) => {
         const isDuplicate = canData.some(item => item.name === newData.name);
@@ -236,8 +236,8 @@ export default function ProtocolDataPage() {
         setOpen(false);
     };
 
-    const [indexToDelete, setIndexToDelete] = React.useState(-1);
-    const [deleteOpen, setDeleteOpen] = React.useState(false);
+    const [indexToDelete, setIndexToDelete] = useState(-1);
+    const [deleteOpen, setDeleteOpen] = useState(false);
     const handleClickDeleteOpen = (index) => {
         setIndexToDelete(index);
         setDeleteOpen(true);
@@ -247,15 +247,15 @@ export default function ProtocolDataPage() {
         setDeleteOpen(false);
     };
 
-    const [searchText, setSearchText] = React.useState('');
-    const [filteredData, setFilteredData] = React.useState([]);
-    React.useEffect(() => {
+    const [searchText, setSearchText] = useState('');
+    const [filteredData, setFilteredData] = useState([]);
+    useEffect(() => {
         setFilteredData(canData);
     }, [canData]);
     const handleSearchChange = (event) => {
         setSearchText(event.target.value);
     };
-    React.useEffect(() => {
+    useEffect(() => {
         if (searchText === '') {
             setFilteredData(canData);
         } else {
@@ -288,6 +288,7 @@ export default function ProtocolDataPage() {
                 .then((res) => {
                     if (res.data.result) {
                         openSuccessSnackbar();
+                        setInitialData(canData);
                     } else {
                         //This case should never happen
                         console.log("Certain error exists!");
@@ -315,7 +316,7 @@ export default function ProtocolDataPage() {
         setPage(0);
     };
 
-    const [successSnackbarOpen, setSuccessSnackbarOpen] = React.useState(false);
+    const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
     const openSuccessSnackbar = () => {
         setSuccessSnackbarOpen(true);
     };
@@ -327,7 +328,7 @@ export default function ProtocolDataPage() {
         setSuccessSnackbarOpen(false);
     };
 
-    const [errorSnackbarOpen, setErrorSnackbarOpen] = React.useState(false);
+    const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
     const openErrorSnackbar = () => {
         setErrorSnackbarOpen(true);
     };
@@ -338,7 +339,7 @@ export default function ProtocolDataPage() {
         setErrorSnackbarOpen(false);
     };
 
-    const [errorOverlapSnackbarOpen, setErrorOverlapSnackbarOpen] = React.useState(false);
+    const [errorOverlapSnackbarOpen, setErrorOverlapSnackbarOpen] = useState(false);
     const openErrorOverlapSnackbar = () => {
         setErrorOverlapSnackbarOpen(true);
     };
@@ -406,6 +407,20 @@ export default function ProtocolDataPage() {
                     onClick={() => navigate('/iot-platform/protocol')}
                 >
                     Protocols
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => navigate('/iot-platform/protocol-stats')}
+                >
+                    Stats
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => navigate('/iot-platform/send_data')}
+                >
+                    Widget
                 </Button>
                 <LogoutButton />
             </ButtonContainer>

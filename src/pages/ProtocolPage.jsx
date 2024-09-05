@@ -29,6 +29,7 @@ import Alert from '@mui/material/Alert';
 import LogoutButton from '../components/LogoutButton';
 import axios from "axios";
 import TextField from '@mui/material/TextField';
+import Tooltip from '@mui/material/Tooltip';
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -245,6 +246,20 @@ export default function ProtocolPage() {
                 >
                     Dashboard
                 </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => navigate('/iot-platform/protocol-stats')}
+                >
+                    Stats
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => navigate('/iot-platform/send_data')}
+                >
+                    Widget
+                </Button>
                 <LogoutButton />
             </ButtonContainer>
             <CenteredDiv>
@@ -282,9 +297,18 @@ export default function ProtocolPage() {
                                     </TableCell>
 
                                     <TableCell style={{ width: 160 }} align="right">
-                                        <Button variant="outlined" color='error' onClick={() => handleClickDeleteOpen(index)}>
-                                            DELETE
-                                        </Button>
+                                        <Tooltip title={row.assigned ? "Protocol assigned to the device" : "Protocol not assigned to the device"}>
+                                            <span>
+                                                <Button
+                                                    disabled={row.assigned}
+                                                    variant="outlined"
+                                                    color='error'
+                                                    onClick={() => handleClickDeleteOpen(index)}
+                                                >
+                                                    DELETE
+                                                </Button>
+                                            </span>
+                                        </Tooltip>
                                         <Dialog
                                             open={deleteOpen}
                                             onClose={handleDeleteClose}
@@ -302,7 +326,7 @@ export default function ProtocolPage() {
                                                             },
                                                         })
                                                             .then((res) => {
-                                                                if(res.data.result) {
+                                                                if (res.data.result) {
                                                                     openSuccessSnackbar();
                                                                 }
                                                             })
