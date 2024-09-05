@@ -5,6 +5,7 @@ import ConfigPage from "./pages/ConfigPage"
 import ProtocolPage from "./pages/ProtocolPage";
 import ProtocolDataPage from "./pages/ProtocolDataPage";
 import { StatsPage } from "./pages/StatsPage";
+import ProtocolInputWidget from "./pages/ProtocolInputWidget"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/iot-platform/protocol" exact element={<ProtocolPage />}></Route>
         <Route path="/iot-platform/protocol-data/:id" exact element={<ProtocolDataPage />}></Route>
         <Route path="/iot-platform/protocol-stats" exact element={<StatsPage />}></Route>
+        <Route path="/iot-platform/send_data" exact element={<ProtocolInputWidget />}></Route>
         <Route path="*" element={<LoginPage />}></Route>
       </Routes>
     </BrowserRouter>
