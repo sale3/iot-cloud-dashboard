@@ -333,4 +333,191 @@ export default function ProtocolInputWidget() {
         });
     };
 
+    
+    return (
+        <>
+            {loaderShow ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <CircularProgress />
+                </Box>
+            ) : (
+                <>
+                    <ButtonContainer>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => navigate('/iot-platform/config')}
+                        >
+                            Configuration
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => navigate('/iot-platform/dashboard')}
+                        >
+                            Dashboard
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => navigate('/iot-platform/protocol')}
+                        >
+                            Protocols
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            onClick={() => navigate('/iot-platform/protocol-stats')}
+                        >
+                            Stats
+                        </Button>
+                        <LogoutButton />
+                    </ButtonContainer>
+
+                    <Button sx={{ marginLeft: '50px' }} variant="outlined" onClick={handleClickOpen}>
+                        Add protocol data for sending
+                    </Button>
+
+                    <Dialog
+                        maxWidth="xl"
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                    >
+                        <DialogTitle id="alert-dialog-title">
+                            Input protocol data
+                        </DialogTitle>
+                        <DialogContent>
+                            <TableContainer component={Paper}>
+                                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>SHOW</TableCell>
+                                            <TableCell align="right">Protocol Name</TableCell>
+                                            <TableCell align="right">Protocol Data Name</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {protocols.map((protocol, protocolIndex) =>
+                                            protocol.protocolData.map((data, index) => (
+                                                <TableRow
+                                                    key={`${protocol.id}-${data.id}-${index}`}
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell component="th" scope="row">
+                                                        <Checkbox
+                                                            disabled={rowData[`${protocolIndex}-${index}`]?.active}
+                                                            checked={data.show || false}
+                                                            onChange={() => handleCheckboxChange(protocol.id, data.id)}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell align="right">{protocol.name}</TableCell>
+                                                    <TableCell align="right">{data.name}</TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose} autoFocus>
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+
+                    {protocols.map((protocol, protocolIndex) => (
+                        protocol.show && (
+                            <div key={protocolIndex}>
+                                <h3 style={{ textAlign: 'center' }}>{protocol.name}</h3>
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center" sx={{ width: '20%' }}>Input value</TableCell>
+                                                <TableCell align="center" sx={{ width: '20%' }}>Data name</TableCell>
+                                                <TableCell align="center" sx={{ width: '20%' }}>SEND TO DEVICE</TableCell>
+                                                <TableCell align="center" sx={{ width: '20%' }}>STOP SENDING TO DEVICE</TableCell>
+                                                <TableCell align="center" sx={{ width: '20%' }}>REMOVE DATA FROM TABLE</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {protocol.protocolData.map((row, dataIndex) => (
+                                                row.show && (
+                                                    <TableRow
+                                                        key={row.name}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell align="center">
+                                                            <CenteredDiv>
+                                                                {rowData[`${protocolIndex}-${dataIndex}`]?.active && (
+                                                                    <span style={{ color: 'green', marginLeft: '8px' }}>Already set</span>
+                                                                )}
+                                                                <TextField
+                                                                    type="number"
+                                                                    id={`value-${protocolIndex}-${dataIndex}`}
+                                                                    label="Value"
+                                                                    variant="outlined"
+                                                                    value={rowData[`${protocolIndex}-${dataIndex}`]?.value === "" ? 0 : rowData[`${protocolIndex}-${dataIndex}`]?.value || 0}
+                                                                    onChange={(e) => handleValueChange(protocolIndex, dataIndex, e)}
+                                                                />
+                                                            </CenteredDiv>
+                                                        </TableCell>
+                                                        <TableCell align="center">{row.name}</TableCell>
+                                                        <TableCell align="center">
+                                                            <Button
+                                                                variant="outlined"
+                                                                color="primary"
+                                                                onClick={() => handleSetClick(protocolIndex, dataIndex)}
+                                                                disabled={rowData[`${protocolIndex}-${dataIndex}`]?.active}
+                                                            >
+                                                                SET
+                                                            </Button>
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            <Button
+                                                                variant="outlined"
+                                                                color="error"
+                                                                onClick={() => handleStopClick(protocolIndex, dataIndex)}
+                                                                disabled={!rowData[`${protocolIndex}-${dataIndex}`]?.active}
+                                                            >
+                                                                STOP
+                                                            </Button>
+                                                        </TableCell>
+                                                        <TableCell align="center">
+                                                            <Button
+                                                                variant="outlined"
+                                                                color="error"
+                                                                onClick={() => removeFromTable(protocolIndex, dataIndex)}
+                                                                disabled={rowData[`${protocolIndex}-${dataIndex}`]?.active}
+                                                            >
+                                                                REMOVE
+                                                            </Button>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </div>
+                        )
+                    ))}
+                    <Snackbar open={snackbarOpen} autoHideDuration={1000} onClose={handleSnackbarClose}>
+                        <Alert
+                            onClose={handleSnackbarClose}
+                            severity="success"
+                            variant="filled"
+                            sx={{ width: '100%' }}
+                        >
+                            Successful operation!
+                        </Alert>
+                    </Snackbar>
+                </>
+            )}
+        </>
+    );
+
 }
