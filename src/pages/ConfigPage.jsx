@@ -7,7 +7,6 @@ import "../style/config-page.css";
 import conf from "../conf.json";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -21,7 +20,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
+import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -110,6 +109,12 @@ export const ConfigPage = () => {
             .then((res) => {
                 if (res.data.result) {
                     setInitialProtocols(protocols);
+                    const storedProtocols = JSON.parse(localStorage.getItem('protocols')) || [];
+                    const assignedProtocolIds = protocols
+                        .filter(protocol => protocol.assigned)
+                        .map(protocol => protocol.id);
+                    const filteredProtocols = storedProtocols.filter(protocol => assignedProtocolIds.includes(protocol.id));
+                    localStorage.setItem('protocols', JSON.stringify(filteredProtocols));
                     onOpenSuccessSnackbar();
                 } else {
                     console.log("Error in protocols assignment!")
@@ -234,6 +239,21 @@ export const ConfigPage = () => {
         setSnackbar(false);
     };
 
+    const syncProtocols = async () => {
+        const response = await axios.post(
+            process.env.REACT_APP_API_URL + `/protocols/sync`,
+            {},
+            {
+                headers: {
+                    Authorization: "Bearer " + sessionStorage.getItem("jwt")
+                }
+            }
+        );
+        if(response.data.result) {
+            onOpenSuccessSnackbar();
+        }
+    }
+
     return (
         <div>
             <Snackbar
@@ -328,6 +348,17 @@ export const ConfigPage = () => {
                         <Typography className="title" variant="h5" component="div">
                             Device protocols
                         </Typography>
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 305, 
+                                right: 1320,
+                            }}
+                        >
+                            <Button variant="outlined" color="primary" onClick={() => syncProtocols()}>
+                                SYNC
+                            </Button>
+                        </Box>
                         <Button onClick={handleClickOpenDialog}>Assign device protocols</Button>
                         <div className="col-div">
 
