@@ -21,6 +21,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import AddIcon from '@mui/icons-material/Add';
 import Box from "@mui/material/Box";
+import LogoutButton from "../components/LogoutButton";
 import { useTheme } from "@mui/material";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -302,11 +303,26 @@ export const ConfigPage = () => {
                 <Button
                     variant="outlined"
                     color="primary"
+                    onClick={() => navigate('/iot-platform/protocol-stats')}
+                >
+                    Stats
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => navigate('/iot-platform/send_data')}
+                >
+                    Widget
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="primary"
                     className=""
                     onClick={submitConfig}
                 >
                     Submit
                 </Button>
+                <LogoutButton />
             </div>
 
             <div className="col-div">

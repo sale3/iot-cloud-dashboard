@@ -332,21 +332,35 @@ export const DataPage = () => {
           {errorMsg}
         </Alert>
       </Snackbar>
-      
+
       <div className="buttons">
         <Button
-            variant="outlined"
-            color="primary"
-            className=""
-            onClick={() => navigate('/iot-platform/config')}
+          variant="outlined"
+          color="primary"
+          className=""
+          onClick={() => navigate('/iot-platform/config')}
         >
           Configuration
         </Button>
         <Button
-            variant="outlined"
-            color="primary"
-            className=""
-            onClick={() => navigate('/iot-platform/protocol')}
+          variant="outlined"
+          color="primary"
+          onClick={() => navigate('/iot-platform/protocol-stats')}
+        >
+          Stats
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => navigate('/iot-platform/send_data')}
+        >
+          Widget
+        </Button>
+        <Button
+          variant="outlined"
+          color="primary"
+          className=""
+          onClick={() => navigate('/iot-platform/protocol')}
         >
           Protocols
         </Button>
