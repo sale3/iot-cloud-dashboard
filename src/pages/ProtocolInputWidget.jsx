@@ -462,6 +462,7 @@ export default function ProtocolInputWidget() {
                                                                     variant="outlined"
                                                                     value={rowData[`${protocolIndex}-${dataIndex}`]?.value === "" ? 0 : rowData[`${protocolIndex}-${dataIndex}`]?.value || 0}
                                                                     onChange={(e) => handleValueChange(protocolIndex, dataIndex, e)}
+                                                                    disabled={rowData[`${protocolIndex}-${dataIndex}`]?.active}
                                                                 />
                                                             </CenteredDiv>
                                                         </TableCell>
