@@ -36,11 +36,19 @@ export const protocolDataSchema = yup.object({
     multiplier: yup
         .number()
         .required("Required field!")
-        .min(1, "Minimum number for this field is 1!"),
+        .test(
+            'not-zero',
+            'Value cannot be zero!',
+            value => value !== 0
+        ),
     divisor: yup
         .number()
         .required("Required field!")
-        .min(1, "Minimum number for this field is 1!"),
+        .test(
+            'not-zero',
+            'Value cannot be zero!',
+            value => value !== 0
+        ),
     offsetValue: yup
         .number()
         .required("Required field!"),
