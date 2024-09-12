@@ -26,7 +26,7 @@ export default function ProtocolDataForm(props) {
 
     const onSubmit = () => {
         const data = getValues();
-        if(props.name !== undefined) {
+        if (props.name !== undefined) {
             props.onUpdate(data);
         } else {
             props.onCreate(data);
@@ -179,11 +179,26 @@ export default function ProtocolDataForm(props) {
 
                         <ColDiv>
                             <StyledLabel>Aggregation method *</StyledLabel>
-                            <select onChange={handleAggregationMethodChange} {...register("aggregationMethod")} name="aggregationMethod">
-                                <option value="MIN">Min</option>
-                                <option value="MAX">Max</option>
-                                <option value="AVG">Avg</option>
-                                <option value="SUM">Sum</option>
+                            <select disabled={mode == ""} onChange={handleAggregationMethodChange} {...register("aggregationMethod")} name="aggregationMethod">
+                                {mode === "INPUT" ? (
+                                    <option value="NONE">None</option>
+                                ) : null}
+                                {mode === "OUTPUT" && (
+                                    <>
+                                        <option value="MIN">Min</option>
+                                        <option value="MAX">Max</option>
+                                        <option value="AVG">Avg</option>
+                                        <option value="SUM">Sum</option>
+                                    </>
+                                )}
+                                {mode == '' && (
+                                    <>
+                                        <option value="MIN">Min</option>
+                                        <option value="MAX">Max</option>
+                                        <option value="AVG">Avg</option>
+                                        <option value="SUM">Sum</option>
+                                    </>
+                                )}
                             </select>
                             <ErrorText>{errors.aggregationMethod?.message}</ErrorText>
                         </ColDiv>
@@ -191,7 +206,7 @@ export default function ProtocolDataForm(props) {
 
                         <ColDiv>
                             <StyledLabel>Mode *</StyledLabel>
-                            <select onChange={handleModeChange} {...register("mode")} name="mode">
+                            <select {...register("mode")} onChange={(e) => handleModeChange(e)}  name="mode">
                                 <option value="INPUT">Input</option>
                                 <option value="OUTPUT">Output</option>
                             </select>
