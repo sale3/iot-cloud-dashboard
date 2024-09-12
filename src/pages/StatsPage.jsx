@@ -50,7 +50,7 @@ export const StatsPage = () => {
             });
     }, []);
 
-    
+
     const formatDate = (dateString) => {
         // Parse the input date string
         const [datePart, timePart] = dateString.split(' ');
@@ -205,7 +205,7 @@ export const StatsPage = () => {
                                         },
                                         sorting: {
                                             sortModel: [{ field: 'formattedDate', sort: 'desc' }],
-                                          },
+                                        },
                                     }}
                                     pageSizeOptions={[5, 10]}
                                     sx={{ overflow: 'clip' }} // sx prop is for MUI components
@@ -255,6 +255,13 @@ export const StatsPage = () => {
                 onClick={() => navigate('/iot-platform/protocol')}
             >
                 Protocols
+            </Button>
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => navigate('/iot-platform/send_data')}
+            >
+                Widget
             </Button>
             <LogoutButton />
         </div>
