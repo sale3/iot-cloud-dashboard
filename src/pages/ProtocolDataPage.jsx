@@ -155,7 +155,7 @@ export default function ProtocolDataPage() {
         } else {
             setDataChanged(true);
         }
-    }, [canData, protocol, initialData]);
+    }, [canData, protocol, initialData, initialProtocolName]);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -289,6 +289,7 @@ export default function ProtocolDataPage() {
                     if (res.data.result) {
                         openSuccessSnackbar();
                         setInitialData(canData);
+                        setInitialProtocolName(protocol.name);
                     } else {
                         //This case should never happen
                         console.log("Certain error exists!");
