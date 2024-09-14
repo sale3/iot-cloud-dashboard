@@ -38,11 +38,21 @@ export default function ProtocolDataForm(props) {
     const [aggregationMethod, setAggregationMethod] = React.useState('');
     const handleAggregationMethodChange = (event) => {
         setAggregationMethod(event.target.value);
+        setValue("aggregationMethod", event.target.value);
     };
 
     const [mode, setMode] = React.useState('');
     const handleModeChange = (event) => {
-        setMode(event.target.value);
+        const mode = event.target.value;
+        setMode(mode);
+        setValue("mode", mode);
+        if(mode == "INPUT") {
+            setAggregationMethod("NONE");
+            setValue("aggregationMethod", "NONE");
+        } else if (mode == "OUTPUT") {
+            setAggregationMethod("MIN");
+            setValue("aggregationMethod", "MIN");
+        }
     };
 
     React.useEffect(() => {
@@ -92,12 +102,7 @@ export default function ProtocolDataForm(props) {
                 fullWidth
                 maxWidth="sm"
             >
-
-                {/*<DialogTitle>{props.headerText}</DialogTitle>*/}
                 <DialogContent>
-                    <DialogContentText>
-                        All fields are required!
-                    </DialogContentText>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <TextField
                             autoFocus
@@ -176,22 +181,23 @@ export default function ProtocolDataForm(props) {
                             {...register("transmitInterval")}
                         />
                         <ErrorText>{errors.transmitInterval?.message}</ErrorText>
-
+                        <ColDiv>
+                            <StyledLabel>Mode *</StyledLabel>
+                            <select {...register("mode")} onChange={(e) => handleModeChange(e)}  name="mode">
+                                <option value="INPUT">Input</option>
+                                <option value="OUTPUT">Output</option>
+                            </select>
+                            <ErrorText>{errors.mode?.message}</ErrorText>
+                        </ColDiv>
                         <ColDiv>
                             <StyledLabel>Aggregation method *</StyledLabel>
                             <select disabled={mode == ""} onChange={handleAggregationMethodChange} {...register("aggregationMethod")} name="aggregationMethod">
-                                {mode === "INPUT" ? (
-                                    <option value="NONE">None</option>
-                                ) : null}
-                                {mode === "OUTPUT" && (
+                                {mode === "INPUT" && (
                                     <>
-                                        <option value="MIN">Min</option>
-                                        <option value="MAX">Max</option>
-                                        <option value="AVG">Avg</option>
-                                        <option value="SUM">Sum</option>
+                                        <option value="NONE">None</option>
                                     </>
                                 )}
-                                {mode == '' && (
+                                {(mode === "OUTPUT") && (
                                     <>
                                         <option value="MIN">Min</option>
                                         <option value="MAX">Max</option>
@@ -201,16 +207,6 @@ export default function ProtocolDataForm(props) {
                                 )}
                             </select>
                             <ErrorText>{errors.aggregationMethod?.message}</ErrorText>
-                        </ColDiv>
-
-
-                        <ColDiv>
-                            <StyledLabel>Mode *</StyledLabel>
-                            <select {...register("mode")} onChange={(e) => handleModeChange(e)}  name="mode">
-                                <option value="INPUT">Input</option>
-                                <option value="OUTPUT">Output</option>
-                            </select>
-                            <ErrorText>{errors.mode?.message}</ErrorText>
                         </ColDiv>
                         <TextField
                             autoFocus

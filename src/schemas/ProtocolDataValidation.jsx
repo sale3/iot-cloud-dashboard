@@ -28,6 +28,7 @@ export const protocolDataSchema = yup.object({
     aggregationMethod: yup
         .string()
         .trim()
+        .oneOf(["MIN", "MAX", "AVG", "SUM", "NONE"], "Invalid aggregation method")
         .required("Required field!"),
     mode: yup
         .string()

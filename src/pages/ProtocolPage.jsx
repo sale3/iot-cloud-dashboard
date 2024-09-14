@@ -195,7 +195,6 @@ export default function ProtocolPage() {
         if (isDuplicate) {
             openErrorSnackbar();
         } else {
-            setProtocolData([...protocolData, newProtocol]);
             axios.post(process.env.REACT_APP_API_URL + `/protocols`, newProtocol, {
                 headers: {
                     Authorization: "Bearer " + sessionStorage.getItem("jwt"),
@@ -203,7 +202,7 @@ export default function ProtocolPage() {
             })
                 .then((res) => {
                     openSuccessSnackbar();
-
+                    setProtocolData([...protocolData, res.data]);
                 })
                 .catch((exc) => {
                     console.log("Error fetching protocol data!");
