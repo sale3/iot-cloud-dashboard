@@ -420,7 +420,7 @@ export default function ProtocolDataPage() {
                     color="primary"
                     onClick={() => navigate('/iot-platform/send_data')}
                 >
-                    Widget
+                    Send data
                 </Button>
                 <LogoutButton />
             </ButtonContainer>

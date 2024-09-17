@@ -166,7 +166,7 @@ export default function ProtocolDataForm(props) {
                             margin="dense"
                             id="transmitInterval"
                             name="transmitInterval"
-                            label="Transmit interval"
+                            label="Transmit interval (s)"
                             type="number"
                             fullWidth
                             variant="standard"
