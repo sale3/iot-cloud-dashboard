@@ -59,11 +59,9 @@ export const RowDiv = styled.div`
 export const BiggerDiv = styled.div`
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     flex-grow: 1;
     width: 67%;
     background-color: #e3f2fd;
-    height: calc(100vh - 60px);
     margin-top: 60px;
 `;
 
@@ -71,7 +69,6 @@ export const SmallerDiv = styled.div`
     display: flex;
     flex-direction: column;
     width: 33%;
-    height: calc(100vh - 60px);
     margin-top: 60px;
 `;
 
